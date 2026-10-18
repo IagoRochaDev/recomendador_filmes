@@ -1,9 +1,13 @@
 import pandas as pd
 from pathlib import Path
+from mcp.server.fastmcp import FastMCP
 
+
+mcp = FastMCP("buscador_filmes")
 
 base_filmes = Path(__file__).parent / "100k_Movies_dataset.csv"
 
+@mcp.tool()
 def buscador(genero: str, duracao: int, ano_lancamento: int, csv_path = base_filmes):
     """
     Descrição:
@@ -49,9 +53,44 @@ def buscador(genero: str, duracao: int, ano_lancamento: int, csv_path = base_fil
 
     return result
 
-if __name__ == '__main__':
-    resultados = buscador('Comedy', 100, 2000)
+@mcp.tool()
+def buscar_por_nome(titulo: str):
+    """
+        Descrição:
+            Função para buscar filmes dentro de uma base de dados 
+            a partir do nome.
+                -O nome deve ser passado em inglês
     
-    for filme in resultados:
-        print(filme)
-        print()
+        Args: 
+            titulo (str): nome do filme (inglês)
+    
+        Returns:
+            dict: informações do filme:
+                'released_year', 'director', 'cast', 'genre', 'ratings', 'runtime', 'Description'
+    """
+    base = pd.read_csv(base_filmes, encoding='utf-8')
+
+    base = base[base['title'].str.contains(titulo, case=False, na=False)]
+
+    result = base[['title', 'released_year', 'ratings', 'director', 'runtime', 'genre', 'Description']].to_dict(orient='records')
+
+    return result
+
+
+if __name__ == '__main__':
+
+    """    
+    termo_busca = input("Nome do filme: ")
+    
+    resultados = buscar_por_nome(termo_busca)
+    
+    if resultados:
+        for filme in resultados:
+            print(filme)
+            print()
+    else:
+        print("Não existe.")
+    """
+
+    mcp.run(transport = 'stdio')
+
