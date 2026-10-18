@@ -4,13 +4,15 @@
 
 Projeto de recomendação e busca de filmes desenvolvido em Python, utilizando o dataset 100k_movies. O sistema utiliza Pandas para manipulação e filtragem dos dados e FastMCP para disponibilizar ferramentas que podem ser utilizadas por agentes de Inteligência Artificial.
 
-O objetivo é explorar a integração entre processamento de dados, agentes de IA e o protocolo MCP (*Model Context Protocol*), além de praticar desenvolvimento colaborativo com Git e GitHub Flow.
+O objetivo é explorar a integração entre processamento de dados, agentes de IA, modelos de linguagem e o protocolo MCP, além de praticar desenvolvimento colaborativo com Git e GitHub Flow.
 
 ## ⚙️ Tecnologias e Ferramentas Utilizadas
 
 - **Python** — linguagem de programação.
 - **Pandas** — carregamento, manipulação e filtragem dos dados.
-- **FastMCP** — criação de ferramentas e servidor MCP.
+- **FastMCP** — criação do servidor MCP e disponibilização das ferramentas de busca.
+- **MCP (Model Context Protocol)** — protocolo de comunicação entre o agente e as ferramentas.
+- **Ollama** — execução local do modelo de linguagem, sem necessidade de utilizar uma API paga.
 - **Git e GitHub** — versionamento e colaboração.
 - **GitHub Flow** — organização do desenvolvimento com branches e Pull Requests.
 
@@ -48,13 +50,42 @@ No Windows:
 pip install -r requirements.txt
 ```
 
-### 4. Execute o servidor MCP
+### 4. Instale o Ollama
+
+O Ollama permite executar modelos de linguagem localmente, sem precisar configurar uma chave de API da OpenAI.
+
+No Ubuntu/Linux, execute:
 
 ```bash
-python chat.py
+curl -fsSL https://ollama.com/install.sh | sh
 ```
 
-O servidor será iniciado utilizando o transporte `stdio`, ficando disponível para comunicação com um cliente MCP compatível.
+Consulte também o site oficial: https://ollama.com/
+
+### 5. Baixe o modelo de linguagem
+
+O projeto utiliza o modelo Llama 3.2 3B. Para baixá-lo, execute:
+
+```bash
+ollama pull llama3.2:3b
+```
+
+Confira se o modelo está disponível:
+
+```bash
+ollama list
+```
+
+**Observação:** o Ollama precisa estar em execução para que o agente consiga acessar o modelo. Dependendo da instalação, ele pode ser iniciado automaticamente ou precisar ser iniciado manualmente.
+
+### 6. Execute o agente
+
+Com o ambiente virtual ativado e o Ollama funcionando, execute:
+
+```bash
+python agent.py
+```
+
 
 ## 👥 Colaboradores
 

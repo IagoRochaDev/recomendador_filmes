@@ -1,0 +1,7 @@
+pandas
+mcp<2
+langchain
+langchain-mcp-adapters
+langgraph
+langchain-ollama
+python-dotenv
