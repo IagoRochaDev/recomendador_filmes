@@ -1,6 +1,7 @@
 pandas
-fastmcp
+mcp<2
+langchain
 langchain-mcp-adapters
 langgraph
-langchain-openai
+langchain-ollama
 python-dotenv

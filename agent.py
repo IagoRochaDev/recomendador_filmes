@@ -4,9 +4,9 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 from langchain_mcp_adapters.client import MultiServerMCPClient
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 from langgraph.checkpoint.memory import InMemorySaver
 
 load_dotenv()
@@ -23,18 +23,18 @@ client = MultiServerMCPClient({
 
 
 async def chat():
-    llm = ChatOpenAI(
-        model="gpt-4o-mini",
-        temperature=0,
-        api_key=os.getenv("OPENAI_API_KEY"),
+    llm = ChatOllama(
+        model="llama3.2:3b",
+        temperature=0.5,
     )
 
     tools = await client.get_tools()
 
-    agent = create_react_agent(
+    agent = create_agent(
         model=llm,
         tools=tools,
-        prompt=(
+        checkpointer=InMemorySaver(),
+        system_prompt=
             "Você é um agente que ajuda usuários a encontrar e recomendar filmes. "
             "Utilize a ferramenta buscar_filmes para consultar a base de dados. "
             "Não invente títulos, gêneros ou notas que não estejam nos resultados. "
@@ -53,14 +53,14 @@ async def chat():
             "Explique brevemente por que cada resultado atende ao pedido. "
             "Informe quando nenhum filme for encontrado. "
             "Deixe claro que a nota apresentada é a média das avaliações "
-            "registradas na base de dados."
-        ),
+            "registradas na base de dados.",
     )
 
     print("Recomendador de Filmes")
     print("Exemplo: Quero filmes de ficção científica bem avaliados.")
     print("Digite /q para sair.\n")
 
+    config = {"configurable": {"thread_id": "1"}}
 
     while True:
         user_input = input("> ").strip()
@@ -79,6 +79,7 @@ async def chat():
                         {"role": "user", "content": user_input}
                     ]
                 },
+                config=config,
             )
 
             print("\nResposta do agente:\n")
@@ -87,7 +88,6 @@ async def chat():
 
         except Exception as e:
             print(f"Erro ao executar o agente: {e}\n")
-            break
 
 
 if __name__ == "__main__":
